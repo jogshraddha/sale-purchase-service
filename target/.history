@@ -1,0 +1,5 @@
+run "8084"
+console
+version
+play
+run "8084"
