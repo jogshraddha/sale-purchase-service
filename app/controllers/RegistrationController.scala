@@ -10,7 +10,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class ApplicationController extends Controller with Logging {
+class RegistrationController extends Controller with Logging {
 
   def registerCustomer = Action.async { implicit request => {
     try {

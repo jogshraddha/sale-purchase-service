@@ -8,13 +8,16 @@ GET     /                           controllers.HomeController.index
 GET     /count                      controllers.CountController.count
 
 #Application requests
-GET     /candidates                 controllers.ApplicationController.getAllCandidates
-GET     /customers                  controllers.ApplicationController.getCustomers
-GET     /customer/:id                  controllers.ApplicationController.getCustomer(id: String)
-GET     /suppliers                  controllers.ApplicationController.getSuppliers
-GET     /supplier/:id                  controllers.ApplicationController.getSupplier(id: String)
-POST    /registerCustomer           controllers.ApplicationController.registerCustomer
-POST    /registerSupplier          controllers.ApplicationController.registerSupplier
+GET     /candidates                 controllers.RegistrationController.getAllCandidates
+GET     /customers                  controllers.RegistrationController.getCustomers
+GET     /customer/:id                  controllers.RegistrationController.getCustomer(id: String)
+GET     /suppliers                  controllers.RegistrationController.getSuppliers
+GET     /supplier/:id                  controllers.RegistrationController.getSupplier(id: String)
+POST    /registerCustomer           controllers.RegistrationController.registerCustomer
+POST    /registerSupplier          controllers.RegistrationController.registerSupplier
+
+POST    /sale                       controllers.SalePurchaseController.addSaleRecord
+POST    /purchase                       controllers.SalePurchaseController.addPurchaseRecord
 
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
