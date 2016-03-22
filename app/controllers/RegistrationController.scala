@@ -1,5 +1,7 @@
 package controllers
 
+import javax.inject.Inject
+
 import enums.CandidateType
 import exceptions.{ErrorCode, SalePurchaseServiceException}
 import play.api.mvc._
@@ -10,12 +12,12 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class RegistrationController extends Controller with Logging {
+class RegistrationController @Inject() (registrationService: RegistrationService, validationService: ValidationService, userDetailsService: UserDetailsService) extends Controller with Logging {
 
   def registerCustomer = Action.async { implicit request => {
     try {
-      val registerRequest = ValidationService.validateRegistration(request)
-      RegistrationService.register(registerRequest, CandidateType.CUSTOMER.toString)
+      val registerRequest = validationService.validateRegistration(request)
+      registrationService.register(registerRequest, CandidateType.CUSTOMER.toString)
       Future(Created)
     } catch {
       case e: SalePurchaseServiceException => Future {
@@ -30,8 +32,8 @@ class RegistrationController extends Controller with Logging {
 
   def registerSupplier = Action.async { implicit request => {
     try {
-      val registerRequest = ValidationService.validateRegistration(request)
-      RegistrationService.register(registerRequest, CandidateType.SUPPLIER.toString)
+      val registerRequest = validationService.validateRegistration(request)
+      registrationService.register(registerRequest, CandidateType.SUPPLIER.toString)
       Future(Created)
     } catch {
       case e: SalePurchaseServiceException => Future {
@@ -46,7 +48,7 @@ class RegistrationController extends Controller with Logging {
 
   def getCustomer(id: String) = Action.async { implicit request => {
    try {
-     Future(Ok(Json.toJson(UserDetailsService.getUser(id, CandidateType.CUSTOMER.toString))))
+     Future(Ok(Json.toJson(userDetailsService.getUser(id, CandidateType.CUSTOMER.toString))))
    } catch {
      case e: Throwable => Future {
        logger.error("Internal server error : ", e)
@@ -57,7 +59,7 @@ class RegistrationController extends Controller with Logging {
 
   def getCustomers = Action.async { implicit request => {
     try {
-      Future(Ok(Json.toJson(UserDetailsService.getUsers(CandidateType.CUSTOMER.toString))))
+      Future(Ok(Json.toJson(userDetailsService.getUsers(CandidateType.CUSTOMER.toString))))
     } catch {
       case e: Throwable => Future {
         logger.error("Internal server error : ", e)
@@ -68,7 +70,7 @@ class RegistrationController extends Controller with Logging {
 
   def getSupplier(id: String) = Action.async { implicit request => {
     try {
-      Future(Ok(Json.toJson(UserDetailsService.getUser(id, CandidateType.SUPPLIER.toString))))
+      Future(Ok(Json.toJson(userDetailsService.getUser(id, CandidateType.SUPPLIER.toString))))
     } catch {
       case e: Throwable => Future {
         logger.error("Internal server error : ", e)
@@ -79,7 +81,7 @@ class RegistrationController extends Controller with Logging {
 
   def getSuppliers = Action.async { implicit request => {
     try {
-      Future(Ok(Json.toJson(UserDetailsService.getUsers(CandidateType.SUPPLIER.toString))))
+      Future(Ok(Json.toJson(userDetailsService.getUsers(CandidateType.SUPPLIER.toString))))
     } catch {
       case e: Throwable => Future {
         logger.error("Internal server error : ", e)
@@ -90,7 +92,7 @@ class RegistrationController extends Controller with Logging {
 
   def getAllCandidates = Action.async { implicit request => {
     try {
-      Future(Ok(Json.toJson(UserDetailsService.getAllCandidates)))
+      Future(Ok(Json.toJson(userDetailsService.getAllCandidates)))
     } catch {
       case e: Throwable => Future {
         logger.error("Internal server error : ", e)

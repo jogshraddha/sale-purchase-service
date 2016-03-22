@@ -8,7 +8,7 @@ import play.api.libs.json.{Json, JsError, JsSuccess, JsValue}
 import play.api.mvc.{Request, AnyContent}
 import play.api.http.Status._
 
-object ValidationService {
+class ValidationService {
   def validateRegistration(request: Request[AnyContent]): CandidateRegisterReq = {
     var bodyJson: JsValue = null
     request.contentType.map(_.toLowerCase(Locale.ENGLISH)) match {

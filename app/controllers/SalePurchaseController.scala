@@ -1,20 +1,22 @@
 package controllers
 
+import javax.inject.Inject
+
 import enums.RecordType
 import exceptions.{ErrorCode, SalePurchaseServiceException}
 import play.api.mvc._
 import play.api.libs.json._
-import services.{SalePurchaseService, ValidationService}
+import services.{RegistrationService, SalePurchaseService, ValidationService}
 import utils.Logging
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-class SalePurchaseController extends Controller with Logging {
+class SalePurchaseController @Inject() (salePurchaseService: SalePurchaseService, validationService: ValidationService) extends Controller with Logging {
   def addSaleRecord = Action.async { implicit request => {
     try {
-      val saleRequest = ValidationService.validateSaleRequest(request)
-      SalePurchaseService.addRecord(saleRequest, RecordType.SALE.toString)
+      val saleRequest = validationService.validateSaleRequest(request)
+      salePurchaseService.addRecord(saleRequest, RecordType.SALE.toString)
       Future(Created)
     } catch {
       case e: SalePurchaseServiceException => Future {
@@ -29,8 +31,8 @@ class SalePurchaseController extends Controller with Logging {
 
   def addPurchaseRecord = Action.async { implicit request => {
     try {
-      val purchaseRequest = ValidationService.validateSaleRequest(request)
-      SalePurchaseService.addRecord(purchaseRequest, RecordType.PURCHASE.toString)
+      val purchaseRequest = validationService.validateSaleRequest(request)
+      salePurchaseService.addRecord(purchaseRequest, RecordType.PURCHASE.toString)
       Future(Created)
     } catch {
       case e: SalePurchaseServiceException => Future {

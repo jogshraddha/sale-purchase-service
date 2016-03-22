@@ -1,6 +1,7 @@
 package services
 
 import java.util.Date
+import javax.inject.Inject
 import play.api.Logger
 
 import controllers.SaleRequest
@@ -12,16 +13,16 @@ import play.api.db.DB
 import play.api.http.Status._
 import utils.RecordIdGenerator
 
-object SalePurchaseService {
+class SalePurchaseService @Inject()(db: play.api.db.DBApi, registrationService: RegistrationService){
 
   def addRecord(saleRequest: SaleRequest, recordType: String) = {
-    RegistrationService.registrations(saleRequest.email) match {
+    registrationService.registrations(saleRequest.email) match {
       case Some(x: Candidate) => {
         val record_id = RecordIdGenerator.generateRecordId(recordType)
         Logger.debug(s"Record with id ${record_id} has been generated")
         val submitted_date = new Date()
         val amount = saleRequest.quantiry * saleRequest.rate
-        DB.withConnection { implicit connection =>
+        db.database("default")withConnection { implicit connection =>
           SQL("""INSERT INTO Record
        (recordid, record_type, transportation_cost, email, submitted_date, quantity, rate, amount)
         values ({record_id}, {record_type}, {transportation_cost}, {email}, {submitted_date}, {quantity}, {rate}, {amount})""")
