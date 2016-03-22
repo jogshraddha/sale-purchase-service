@@ -26,7 +26,6 @@ object CandidateRegisterReq {
 case class SaleRequest(
                          email: String,
                          transport_cost: Double,
-                         submitted_date: Date,
                          quantiry: Double,
                          rate: Double
 )
@@ -35,7 +34,6 @@ object SaleRequest {
   implicit val saleReads: Reads[SaleRequest] = (
     (JsPath \ "email").read[String] and
       (JsPath \ "transport_cost").read[Double] and
-      (JsPath \ "submitted_date").read[Date] and
       (JsPath \ "quantiry").read[Double] and
       (JsPath \ "rate").read[Double]
     )(SaleRequest.apply _)
